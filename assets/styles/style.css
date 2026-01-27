@@ -1,0 +1,164 @@
+/* css/style.css */
+:root {
+    /* 색상 팔레트 */
+    --color-bg: #121212;
+    --color-text: #E0E0E0;
+    --color-secondary: #444444;
+    --color-accent1: #3B9797;
+    --color-accent2: #FFCC00;
+    --color-bg-card: #1A1A1A;
+
+    /* 타이포그래피 */
+    --font-heading: 'Roboto', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    color: var(--color-text);
+}
+
+/* 레이아웃 스타일 */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25%;
+    height: 100vh;
+    background-color: var(--color-bg);
+    border-right: 1px solid var(--color-secondary);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-header h1 a {
+    font-size: 1.5rem;
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.content {
+    margin-left: 25%;
+    width: 75%;
+}
+
+.section {
+    padding: 6rem 4rem;
+    min-height: 100vh;
+    border-bottom: 1px solid var(--color-secondary);
+}
+
+/* 내비게이션 */
+.sidebar-nav {
+    list-style: none;
+}
+.sidebar-nav li {
+    margin-bottom: 1rem;
+}
+.sidebar-nav a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: var(--color-secondary);
+    font-weight: 400;
+    transition: color 0.3s ease;
+}
+.sidebar-nav a:hover {
+    color: var(--color-accent2);
+}
+.sidebar-nav a.active {
+    color: var(--color-accent1);
+    font-weight: 900;
+}
+
+/* 프로젝트 카드 */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.project-card {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.project-content {
+    padding: 1.5rem;
+}
+
+/* 기술 스택 태그 */
+.tech-tag {
+    font-family: var(--font-mono);
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    display: inline-block; /* 추가: 줄바꿈 방지 */
+    margin-bottom: 0.5rem; /* 추가 */
+}
+
+/* CTA 버튼 */
+.cta-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-accent1);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 900;
+    transition: background-color 0.3s ease;
+}
+.cta-button:hover {
+    background-color: var(--color-accent2);
+    color: var(--color-bg);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 900px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--color-secondary);
+        flex-direction: row;
+        align-items: center;
+        padding: 1rem;
+    }
+    .sidebar-nav {
+        display: none; /* 모바일 메뉴 토글은 JS 추가 필요 */
+    }
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+    .section {
+        padding: 3rem 1.5rem;
+    }
+}
