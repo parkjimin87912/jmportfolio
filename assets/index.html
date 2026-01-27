@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>개발자 박지민 포트폴리오</title>
+    <title>개발자 박지민 - READY PLAYER ONE</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@300&family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/style.css">
@@ -15,122 +15,134 @@
     <script src="scripts/main.js" defer></script>
 </head>
 <body>
-<nav class="sidebar">
-    <div class="sidebar-header">
-        <h1><a href="#home">개발자 박지민</a></h1>
+
+<section id="intro-screen">
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="intro-content">
+        <h1 class="pixel-font glitch" data-text="INSERT COIN">INSERT COIN</h1>
+        <p class="intro-subtitle pixel-font">PARK JI-MIN'S PORTFOLIO</p>
+        <button id="start-button" class="pixel-font blink">GAME START</button>
     </div>
+</section>
 
-    <ul class="sidebar-nav">
-        <li><a href="#home" class="nav-link active">Home</a></li>
-        <li><a href="#about" class="nav-link">About</a></li>
-        <li><a href="#skills" class="nav-link">Skills</a></li>
-        <li><a href="#projects" class="nav-link">Projects</a></li>
-        <li><a href="#contact" class="nav-link">Contact</a></li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <a href="https://github.com/" target="_blank">GitHub</a>
-    </div>
-</nav>
-
-<main class="content">
-    <section id="home" class="section">
-        <h2>박지민</h2>
-        <p>AI 모델을 실제 서비스로 연결하는<br>백엔드 엔지니어입니다.</p>
-    </section>
-
-    <section id="about" class="section">
-        <h2>About Me</h2>
-        <div class="about-content">
-            <p><strong>"데이터와 사용자를 잇는 다리가 되겠습니다."</strong></p>
-            <br>
-            <p>
-                AI 학과를 전공하며 Python 기반의 데이터 분석과 모델링 기초를 다졌고,
-                이를 실제 사용자가 쓸 수 있는 서비스로 구현하기 위해 풀스택 웹 기술을 학습했습니다.
-            </p>
-            <p>
-                단순히 기능을 구현하는 것을 넘어,
-                <strong>'어떻게 하면 AI 모델을 효율적으로 서빙할 수 있을지',
-                    '어떻게 안정적인 데이터 파이프라인을 구축할지'</strong>를 고민하는 백엔드 개발자를 지향합니다.
-            </p>
+<div id="portfolio-content" style="display: none; opacity: 0;">
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h1><a href="#home" class="pixel-font">DEV.PJM</a></h1>
         </div>
-    </section>
 
-    <section id="skills" class="section">
-        <h2>Skills</h2>
-        <div class="skill-category">
-            <h3>Backend & Database</h3>
-            <ul>
-                <li class="tech-tag">Node.js (Express)</li>
-                <li class="tech-tag">MySQL / MongoDB</li>
-                <li class="tech-tag">REST API</li>
-            </ul>
-        </div>
-        <div class="skill-category">
-            <h3>AI & Data</h3>
-            <ul>
-                <li class="tech-tag">Python</li>
-                <li class="tech-tag">Pandas / NumPy</li>
-                <li class="tech-tag">Scikit-learn</li>
-            </ul>
-        </div>
-        <div class="skill-category">
-            <h3>Frontend & Tools</h3>
-            <ul>
-                <li class="tech-tag">React</li>
-                <li class="tech-tag">JavaScript (ES6+)</li>
-                <li class="tech-tag">Git / GitHub</li>
-            </ul>
-        </div>
-    </section>
+        <ul class="sidebar-nav">
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
 
-    <section id="projects" class="section">
-        <h2>Projects</h2>
-        <div class="project-grid">
-            <div class="project-card">
-                <div style="background-color: #333; min-height: 200px; display:flex; align-items:center; justify-content:center; color:#888;">
-                    프로젝트 썸네일 영역
-                </div>
-                <div class="project-content">
-                    <h3>Loa-Insight: 경매장 시세 예측 및 추천</h3>
-                    <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #ccc;">
-                        로스트아크 Open API를 활용하여 경매장 데이터를 수집하고,
-                        <strong>통계적 알고리즘(Z-Score)을 통해 시세 대비 저평가된 아이템을 추천</strong>하는 서비스입니다.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Node.js</span>
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">MariaDB</span>
-                        <span class="tech-tag">Chart.js</span>
+        <div class="sidebar-footer">
+            <a href="https://github.com/" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section id="home" class="section">
+            <h2>박지민</h2>
+            <p>AI 모델을 실제 서비스로 연결하는<br>백엔드 엔지니어입니다.</p>
+        </section>
+
+        <section id="about" class="section">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <p><strong>"데이터와 사용자를 잇는 다리가 되겠습니다."</strong></p>
+                <br>
+                <p>
+                    AI 학과를 전공하며 Python 기반의 데이터 분석과 모델링 기초를 다졌고,
+                    이를 실제 사용자가 쓸 수 있는 서비스로 구현하기 위해 풀스택 웹 기술을 학습했습니다.
+                </p>
+                <p>
+                    단순히 기능을 구현하는 것을 넘어,
+                    <strong>'어떻게 하면 AI 모델을 효율적으로 서빙할 수 있을지',
+                        '어떻게 안정적인 데이터 파이프라인을 구축할지'</strong>를 고민하는 백엔드 개발자를 지향합니다.
+                </p>
+            </div>
+        </section>
+
+        <section id="skills" class="section">
+            <h2>Skills</h2>
+            <div class="skill-category">
+                <h3>Backend & Database</h3>
+                <ul>
+                    <li class="tech-tag">Node.js (Express)</li>
+                    <li class="tech-tag">MySQL / MongoDB</li>
+                    <li class="tech-tag">REST API</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <h3>AI & Data</h3>
+                <ul>
+                    <li class="tech-tag">Python</li>
+                    <li class="tech-tag">Pandas / NumPy</li>
+                    <li class="tech-tag">Scikit-learn</li>
+                </ul>
+            </div>
+            <div class="skill-category">
+                <h3>Frontend & Tools</h3>
+                <ul>
+                    <li class="tech-tag">React</li>
+                    <li class="tech-tag">JavaScript (ES6+)</li>
+                    <li class="tech-tag">Git / GitHub</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="projects" class="section">
+            <h2>Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div style="background-color: #333; min-height: 200px; display:flex; align-items:center; justify-content:center; color:#888;">
+                        프로젝트 썸네일 영역
                     </div>
-                    <div class="project-links" style="margin-top: 1rem;">
-                        <a href="#" class="project-link">GitHub</a>
+                    <div class="project-content">
+                        <h3>Loa-Insight: 경매장 시세 예측 및 추천</h3>
+                        <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #ccc;">
+                            로스트아크 Open API를 활용하여 경매장 데이터를 수집하고,
+                            <strong>통계적 알고리즘(Z-Score)을 통해 시세 대비 저평가된 아이템을 추천</strong>하는 서비스입니다.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">MariaDB</span>
+                            <span class="tech-tag">Chart.js</span>
+                        </div>
+                        <div class="project-links" style="margin-top: 1rem;">
+                            <a href="#" class="project-link">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-content">
+                        <h3>포트폴리오 웹사이트</h3>
+                        <p>
+                            Intersection Observer API를 활용한 SPA 스타일의 개인 포트폴리오 사이트입니다.
+                            반응형 디자인과 깔끔한 UI/UX를 목표로 제작했습니다.
+                        </p>
+                        <div class="project-tech" style="margin-top: 1rem;">
+                            <span class="tech-tag">HTML5/CSS3</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="project-card">
-                <div class="project-content">
-                    <h3>포트폴리오 웹사이트</h3>
-                    <p>
-                        Intersection Observer API를 활용한 SPA 스타일의 개인 포트폴리오 사이트입니다.
-                        반응형 디자인과 깔끔한 UI/UX를 목표로 제작했습니다.
-                    </p>
-                    <div class="project-tech" style="margin-top: 1rem;">
-                        <span class="tech-tag">HTML5/CSS3</span>
-                        <span class="tech-tag">JavaScript</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="section">
-        <h2>Contact</h2>
-        <p>연락을 기다립니다.</p>
-        <p>010-4499-6857</p>
-        <a href="mailto:pjm6857@naver.com" class="cta-button">이메일 보내기</a>
-    </section>
-</main>
-</body>
+        <section id="contact" class="section">
+            <h2>Contact</h2>
+            <p>연락을 기다립니다.</p>
+            <p>010-4499-6857</p>
+            <a href="mailto:pjm6857@naver.com" class="cta-button">이메일 보내기</a>
+        </section>
+    </main>
+</div> </body>
 </html>
