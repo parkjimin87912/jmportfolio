@@ -1,59 +1,64 @@
 // js/main.js
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* =========================================
-       [NEW] Intro Screen Logic (Game Start)
-    ========================================= */
+    /* 1. Intro Screen Logic */
     const introScreen = document.getElementById('intro-screen');
     const startButton = document.getElementById('start-button');
     const portfolioContent = document.getElementById('portfolio-content');
 
     if (startButton) {
         startButton.addEventListener('click', () => {
-            // 1. 인트로 스크린 페이드 아웃
             introScreen.classList.add('fade-out');
-
-            // 2. 인트로가 완전히 사라진 후 (0.8초 뒤) 메인 콘텐츠 표시
             setTimeout(() => {
                 introScreen.style.display = 'none';
                 portfolioContent.style.display = 'block';
-                // 약간의 딜레이 후 페이드 인 적용 (부드럽게)
                 setTimeout(() => {
                     portfolioContent.classList.add('fade-in');
                 }, 50);
-            }, 800); // CSS animation duration과 맞춰야 함
+            }, 800);
         });
     }
 
+    /* 2. Scroll Reveal Animation (레퍼런스 사이트 효과) */
+    const hiddenSections = document.querySelectorAll('.hidden-section');
 
-    /* =========================================
-       Existing Navigation Logic (기존 코드 유지)
-    ========================================= */
-    const sections = document.querySelectorAll('.section');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show-section');
+            }
+        });
+    }, { threshold: 0.15 }); // 15% 정도 보이면 등장
+
+    hiddenSections.forEach(section => {
+        revealObserver.observe(section);
+    });
+
+
+    /* 3. Navigation Active State */
+    const sections = document.querySelectorAll('section'); // 모든 섹션 감지
     const navLinks = document.querySelectorAll('.nav-link');
 
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5
-    };
-
-    const observer = new IntersectionObserver((entries) => {
+    const navObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const id = entry.target.getAttribute('id');
+                // Intro 화면은 네비게이션에 없으므로 제외
+                if(id === 'intro-screen') return;
+
                 navLinks.forEach(link => {
                     link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
                 });
-                const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-                if (activeLink) {
-                    activeLink.classList.add('active');
-                }
             }
         });
-    }, observerOptions);
+    }, { threshold: 0.5 });
 
     sections.forEach(section => {
-        observer.observe(section);
+        navObserver.observe(section);
     });
+
 });
