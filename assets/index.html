@@ -15,9 +15,11 @@
 </head>
 <body>
 
+<div class="stars"></div>
+<div class="twinkling"></div>
+<div class="scanlines"></div>
+
 <section id="intro-screen">
-    <div class="stars"></div>
-    <div class="twinkling"></div>
     <div class="intro-content">
         <h1 class="pixel-font glitch" data-text="INSERT COIN">INSERT COIN</h1>
         <p class="intro-subtitle pixel-font">PARK JI-MIN'S PORTFOLIO</p>
@@ -30,21 +32,27 @@
     <nav class="sidebar">
         <div class="sidebar-header">
             <h1><a href="#home" class="pixel-font">LV.5 PJM</a></h1>
+            <div class="hp-container">
+                <span class="label pixel-font">HP</span>
+                <div class="hp-bar">
+                    <div class="hp-fill"></div>
+                </div>
+            </div>
         </div>
         <ul class="sidebar-nav">
-            <li><a href="#home" class="nav-link active">Home</a></li>
-            <li><a href="#about" class="nav-link">About</a></li>
-            <li><a href="#skills" class="nav-link">Skills</a></li>
-            <li><a href="#projects" class="nav-link">Projects</a></li>
-            <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="#home" class="nav-link active">STAGE 1 : Home</a></li>
+            <li><a href="#about" class="nav-link">STAGE 2 : About</a></li>
+            <li><a href="#skills" class="nav-link">STAGE 3 : Skills</a></li>
+            <li><a href="#projects" class="nav-link">STAGE 4 : Projects</a></li>
+            <li><a href="#contact" class="nav-link">ENDING : Contact</a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="https://github.com/parkjimin87912" target="_blank">GitHub</a>
+            <a href="https://github.com/parkjimin87912" target="_blank" class="pixel-font">ACCESS GITHUB</a>
         </div>
     </nav>
 
     <main class="content">
-        <section id="home" class="section hidden-section">
+        <section id="home" class="section reveal from-bottom">
             <div class="hero-text">
                 <p class="pixel-font sub-highlight">PLAYER READY</p>
                 <h2>AI와 백엔드를 잇는<br>브릿지 개발자,<br><span class="highlight">박지민</span>입니다.</h2>
@@ -54,7 +62,7 @@
             </div>
         </section>
 
-        <section id="about" class="section hidden-section">
+        <section id="about" class="section reveal from-left">
             <h2 class="section-title"><span class="pixel-font">01.</span> About Me</h2>
             <div class="about-grid">
                 <div class="about-text">
@@ -73,7 +81,7 @@
             </div>
         </section>
 
-        <section id="skills" class="section hidden-section">
+        <section id="skills" class="section reveal from-right">
             <h2 class="section-title"><span class="pixel-font">02.</span> Inventory</h2>
 
             <div class="skill-container">
@@ -99,13 +107,13 @@
             </div>
         </section>
 
-        <section id="projects" class="section hidden-section">
-            <h2 class="section-title"><span class="pixel-font">03.</span> Quests</h2>
+        <section id="projects" class="section">
+            <h2 class="section-title reveal from-bottom"><span class="pixel-font">03.</span> Quests</h2>
             <div class="project-grid">
 
-                <article class="project-card">
+                <article class="project-card reveal from-left-rotate">
                     <div class="card-header">
-                        <div class="folder-tab">PROJECT_01</div>
+                        <div class="folder-tab">MISSION_01</div>
                     </div>
                     <div class="card-body">
                         <h3>Loa-Insight: 로스트아크 시세 예측</h3>
@@ -124,9 +132,9 @@
                     </div>
                 </article>
 
-                <article class="project-card">
+                <article class="project-card reveal from-right-rotate">
                     <div class="card-header">
-                        <div class="folder-tab">PROJECT_02</div>
+                        <div class="folder-tab">MISSION_02</div>
                     </div>
                     <div class="card-body">
                         <h3>Interactive Portfolio</h3>
@@ -147,7 +155,7 @@
             </div>
         </section>
 
-        <section id="contact" class="section hidden-section">
+        <section id="contact" class="section reveal from-bottom">
             <h2 class="section-title"><span class="pixel-font">04.</span> Game Over?</h2>
             <div class="contact-box">
                 <p>새로운 스테이지를 함께할 준비가 되었습니다.</p>

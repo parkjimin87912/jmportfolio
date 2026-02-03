@@ -3,15 +3,16 @@
     --color-bg: #0b0b0d;
     --color-text: #f0f0f0;
     --color-gray: #888888;
-    --color-accent: #00ffcc; /* 네온 민트 (메인) */
-    --color-accent2: #ff0055; /* 네온 핑크 (포인트) */
-    --color-card-bg: rgba(255, 255, 255, 0.05);
+    --color-accent: #00ffcc; /* 네온 민트 */
+    --color-accent2: #ff0055; /* 네온 핑크 */
+    --color-card-bg: rgba(0, 20, 20, 0.6); /* 더 어둡고 투명하게 변경 */
 
     --font-pixel: 'Press Start 2P', cursive;
     --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
 /* 기본 세팅 */
+* { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
     background-color: var(--color-bg);
@@ -19,6 +20,7 @@ body {
     font-family: var(--font-main);
     line-height: 1.7;
     overflow-x: hidden;
+    cursor: crosshair; /* [핵심] 게임 조준점 커서 */
 }
 
 /* 유틸리티 */
@@ -27,27 +29,62 @@ body {
 .sub-highlight { color: var(--color-accent2); font-size: 0.8rem; margin-bottom: 1rem; display: block;}
 
 /* ============================
-   Intro Screen (Game) - 기존 유지
+   Background & Effects (Global)
    ============================ */
-#intro-screen {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    background: #000; z-index: 9999;
-    display: flex; justify-content: center; align-items: center;
+/* 배경을 fixed로 변경하여 항상 화면 뒤에 고정 */
+.stars, .twinkling {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: block;
 }
-.stars, .twinkling { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
-.stars { background: #000 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png') repeat top center; z-index: 0; }
-.twinkling { background: transparent url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png') repeat top center; z-index: 1; animation: move-twink-back 200s linear infinite; }
+.stars {
+    background: #000 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/stars.png') repeat top center;
+    z-index: -2;
+}
+.twinkling {
+    background: transparent url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png') repeat top center;
+    z-index: -1;
+    animation: move-twink-back 200s linear infinite;
+}
+
+/* [추가] CRT 스캔라인 효과 */
+.scanlines {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0),
+            rgba(255,255,255,0) 50%,
+            rgba(0,0,0,0.1) 50%,
+            rgba(0,0,0,0.1)
+    );
+    background-size: 100% 4px;
+    z-index: 9999;
+    pointer-events: none; /* 클릭 방해 금지 */
+}
 
 @keyframes move-twink-back { from {background-position:0 0;} to {background-position:-10000px 5000px;} }
 
+/* ============================
+   Intro Screen
+   ============================ */
+#intro-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    /* 배경색 제거 (투명하게 해서 뒤에 별이 보이게 할 수도 있으나, 시작 전엔 검은 배경이 몰입감 좋음 -> 유지하되 opacity 조절 가능. 일단 기존 유지) */
+    background: transparent; /* 별이 보이도록 투명 배경으로 변경 */
+    z-index: 9998; /* 스캔라인보다 아래 */
+    display: flex; justify-content: center; align-items: center;
+}
+
 .intro-content { z-index: 2; text-align: center; }
-.intro-content h1 { font-size: 3rem; color: #fff; margin-bottom: 1rem; text-shadow: 4px 4px var(--color-accent2); }
+.intro-content h1 { font-size: 3rem; color: #fff; margin-bottom: 1rem; text-shadow: 4px 4px var(--color-accent2); line-height: 1.5; }
 .intro-subtitle { color: #aaa; margin-bottom: 3rem; font-size: 0.8rem; }
 #start-button {
-    background: transparent; border: 2px solid var(--color-accent); color: var(--color-accent);
-    padding: 1rem 2rem; font-size: 1rem; cursor: pointer; transition: 0.3s;
+    background: transparent; border: 4px solid var(--color-accent); color: var(--color-accent);
+    padding: 1rem 2rem; font-size: 1rem; cursor: pointer; transition: 0.2s;
+    box-shadow: 0 0 10px var(--color-accent);
 }
-#start-button:hover { background: var(--color-accent); color: #000; box-shadow: 0 0 20px var(--color-accent); }
+#start-button:hover {
+    background: var(--color-accent); color: #000;
+    transform: scale(1.1);
+}
 .blink { animation: blinker 1s linear infinite; }
 @keyframes blinker { 50% { opacity: 0; } }
 
@@ -59,108 +96,297 @@ body {
 
 
 /* ============================
-   Layout & Sidebar
+   Layout & Sidebar (HUD Style)
    ============================ */
 .sidebar {
     position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
-    background: rgba(0,0,0,0.8); border-right: 1px solid #333;
-    padding: 3rem 2rem; display: flex; flex-direction: column; justify-content: space-between;
-    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.85); border-right: 2px solid #333;
+    padding: 3rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between;
+    backdrop-filter: blur(5px);
+    z-index: 100;
 }
-.sidebar-header h1 a { color: var(--color-accent); text-decoration: none; font-size: 1.2rem; }
+.sidebar-header { margin-bottom: 2rem; border-bottom: 4px double #333; padding-bottom: 1rem; }
+.sidebar-header h1 a { color: var(--color-accent); text-decoration: none; font-size: 1.4rem; text-shadow: 2px 2px #000; }
+
+/* HP Bar 스타일 */
+.hp-container { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+.hp-container .label { color: var(--color-accent2); font-size: 0.7rem; }
+.hp-bar {
+    flex-grow: 1; height: 12px; background: #333; border: 2px solid #555;
+    position: relative;
+}
+.hp-fill {
+    width: 80%; height: 100%; background: var(--color-accent2);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    animation: hp-pulse 2s infinite;
+}
+@keyframes hp-pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+
 .sidebar-nav { list-style: none; }
-.sidebar-nav li { margin-bottom: 1.5rem; }
+.sidebar-nav li { margin-bottom: 0.5rem; }
 .sidebar-nav a {
-    color: var(--color-gray); text-decoration: none; font-size: 1rem; font-weight: 500; transition: 0.3s;
+    color: var(--color-gray); text-decoration: none; font-size: 0.9rem;
+    font-family: var(--font-pixel); /* 메뉴 폰트 픽셀로 변경 */
+    transition: 0.2s;
+    display: block; padding: 10px;
+    border: 1px solid transparent;
 }
-.sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; padding-left: 10px; }
-.sidebar-nav a.active { color: var(--color-accent); font-weight: 700; }
-.sidebar-footer a { color: #555; font-size: 0.9rem; text-decoration: none; }
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    color: var(--color-accent);
+    background: rgba(0, 255, 204, 0.1);
+    border: 1px dashed var(--color-accent);
+    padding-left: 15px;
+}
+/* 호버 시 화살표 */
+.sidebar-nav a:hover::before, .sidebar-nav a.active::before {
+    content: '►'; margin-right: 8px; font-size: 0.8rem;
+}
+
+.sidebar-footer a { color: #555; font-size: 0.8rem; text-decoration: none; transition: 0.3s; }
+.sidebar-footer a:hover { color: #fff; text-shadow: 0 0 5px #fff; }
 
 .content { margin-left: 280px; width: calc(100% - 280px); padding: 0; }
 .section {
     min-height: 100vh; padding: 6rem 5rem;
     display: flex; flex-direction: column; justify-content: center;
-    border-bottom: 1px solid #1a1a1a;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.section-title { font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700; color: #fff; }
-.section-title span { font-size: 1.2rem; color: var(--color-accent); margin-right: 10px; }
+.section-title { font-size: 2.5rem; margin-bottom: 3rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+.section-title span { font-size: 1.2rem; color: var(--color-accent); margin-right: 15px; }
 
 
 /* ============================
-   Scroll Animation (Show/Hide)
+   Scroll Animation
    ============================ */
-.hidden-section { opacity: 0; transform: translateY(50px); transition: all 1s ease; }
-.show-section { opacity: 1; transform: translateY(0); }
+.reveal { opacity: 0; transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+.reveal.from-bottom { transform: translateY(50px); }
+.reveal.from-left { transform: translateX(-50px); }
+.reveal.from-right { transform: translateX(50px); }
+.reveal.from-left-rotate { transform: translateX(-50px) rotate(-3deg); }
+.reveal.from-right-rotate { transform: translateX(50px) rotate(3deg); }
+.reveal.active { opacity: 1; transform: translate(0, 0) rotate(0); }
 
 
 /* ============================
-   Section Specifics
+   Section Styles
    ============================ */
 /* Home */
 .hero-text h2 { font-size: 3.5rem; line-height: 1.2; margin-bottom: 1.5rem; font-weight: 800; }
-.hero-text .description { font-size: 1.1rem; color: var(--color-gray); max-width: 600px; }
+.hero-text .description { font-size: 1.1rem; color: var(--color-gray); max-width: 600px; border-left: 4px solid var(--color-accent); padding-left: 1rem; }
 
 /* About */
 .about-text h3 { font-size: 1.8rem; margin-bottom: 1.5rem; color: #fff; }
 .about-text p { color: #ccc; margin-bottom: 2rem; font-size: 1.05rem; }
 .keyword-box .keyword {
-    display: inline-block; border: 1px solid #444; color: var(--color-accent);
-    padding: 0.5rem 1rem; border-radius: 50px; margin-right: 0.5rem; margin-bottom: 0.5rem; font-size: 0.9rem;
+    display: inline-block; border: 1px solid var(--color-accent); color: var(--color-accent);
+    background: rgba(0, 255, 204, 0.1);
+    padding: 0.5rem 1rem; margin-right: 0.5rem; margin-bottom: 0.5rem; font-size: 0.8rem;
+    font-family: var(--font-pixel); /* 폰트 통일 */
+    box-shadow: 3px 3px 0px rgba(0, 255, 204, 0.3); /* 픽셀 그림자 */
+    transition: 0.2s;
 }
+.keyword-box .keyword:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0px rgba(0, 255, 204, 0.3); }
 
-/* Skills */
+/* Skills (Inventory Style) */
 .skill-container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-.skill-group h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-gray); border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+.skill-group h3 { font-family: var(--font-pixel); font-size: 1rem; margin-bottom: 1.5rem; color: var(--color-gray); border-bottom: 2px dashed #333; padding-bottom: 0.5rem; }
 .tech-tag {
-    display: inline-block; padding: 0.5rem 1rem; margin: 0 0.5rem 0.5rem 0;
-    background: #1a1a1a; border-radius: 4px; font-size: 0.9rem; color: #e0e0e0;
+    position: relative; display: inline-block; padding: 0.8rem 1rem; margin: 0 0.8rem 0.8rem 0;
+    background: #111; border: 2px solid #444; color: #aaa;
+    font-family: var(--font-pixel); font-size: 0.75rem;
+    box-shadow: 4px 4px 0 #000; /* 강한 그림자 */
+    transition: 0.1s;
 }
-.tech-tag.high { border: 1px solid var(--color-accent); color: var(--color-accent); }
+.tech-tag:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--color-accent);
+    border-color: var(--color-accent); color: #fff;
+    cursor: help;
+}
+.tech-tag.high { border-color: var(--color-accent); color: var(--color-accent); }
+.tech-tag.high:hover { background: var(--color-accent); color: #000; box-shadow: 6px 6px 0 #fff; }
 
-/* Projects (Card Style) */
-.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2.5rem; }
+/* Projects (Mission Cards) */
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem; }
 .project-card {
-    background: var(--color-card-bg); border: 1px solid #333; border-radius: 12px;
-    overflow: hidden; transition: 0.3s;
+    background: var(--color-card-bg); border: 2px solid #333;
+    position: relative; transition: 0.3s;
+    /* border-radius 제거 (레트로 느낌) */
 }
-.project-card:hover { transform: translateY(-10px); border-color: var(--color-accent); box-shadow: 0 10px 30px rgba(0, 255, 204, 0.1); }
+/* 카드 코너 장식 (HUD 느낌) */
+.project-card::before {
+    content: ''; position: absolute; top: -2px; left: -2px; width: 20px; height: 20px;
+    border-top: 4px solid var(--color-accent); border-left: 4px solid var(--color-accent);
+}
+.project-card::after {
+    content: ''; position: absolute; bottom: -2px; right: -2px; width: 20px; height: 20px;
+    border-bottom: 4px solid var(--color-accent); border-right: 4px solid var(--color-accent);
+}
+
+.project-card:hover { border-color: var(--color-accent); box-shadow: 0 0 20px rgba(0, 255, 204, 0.1); transform: translateY(-5px); }
 
 .card-header {
-    height: 40px; background: #111; border-bottom: 1px solid #333;
+    height: 45px; background: rgba(0,0,0,0.5); border-bottom: 1px solid #333;
     display: flex; align-items: center; padding-left: 1rem;
 }
-.folder-tab { font-size: 0.7rem; color: #888; font-family: var(--font-pixel); }
+.folder-tab {
+    font-size: 0.7rem; color: #000; background: var(--color-accent);
+    padding: 4px 8px; font-weight: bold; font-family: var(--font-pixel);
+}
 
 .card-body { padding: 2rem; }
 .card-body h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
-.project-desc { color: #aaa; margin-bottom: 1.5rem; font-size: 0.95rem; min-height: 3em; }
+.project-desc { color: #ccc; margin-bottom: 1.5rem; font-size: 0.95rem; min-height: 3em; line-height: 1.6; }
 
 .tech-stack span {
-    font-size: 0.8rem; color: var(--color-accent2); background: rgba(255, 0, 85, 0.1);
-    padding: 0.2rem 0.6rem; border-radius: 4px; margin-right: 0.5rem;
+    font-size: 0.8rem; color: var(--color-accent2); border: 1px solid var(--color-accent2);
+    padding: 0.2rem 0.6rem; margin-right: 0.5rem; background: rgba(255, 0, 85, 0.05);
 }
 
-.card-links { margin-top: 2rem; border-top: 1px solid #333; padding-top: 1rem; }
-.card-links a { font-size: 0.9rem; color: #fff; margin-right: 1.5rem; font-weight: bold; border-bottom: 1px solid transparent; transition: 0.3s;}
-.card-links a:hover { border-bottom-color: var(--color-accent); color: var(--color-accent); }
+.card-links { margin-top: 2rem; border-top: 1px dashed #333; padding-top: 1rem; text-align: right;}
+.card-links a {
+    display: inline-block; font-size: 0.8rem; color: #fff; margin-left: 1rem;
+    font-family: var(--font-pixel); text-transform: uppercase;
+    transition: 0.2s;
+}
+.card-links a:hover { color: var(--color-accent); text-shadow: 0 0 5px var(--color-accent); }
 
 /* Contact */
-.contact-box { text-align: center; border: 2px dashed #333; padding: 4rem; border-radius: 20px; }
-.contact-info { font-size: 1.2rem; margin: 2rem 0; font-weight: bold; color: #fff; }
-.cta-button {
-    display: inline-block; background: var(--color-accent); color: #000;
-    padding: 1rem 2rem; font-weight: 900; border-radius: 4px; text-decoration: none; transition: 0.3s;
+.contact-box {
+    text-align: center; border: 4px solid #333; padding: 4rem;
+    background: rgba(0,0,0,0.8); position: relative;
 }
-.cta-button:hover { background: #fff; transform: scale(1.05); }
+.contact-info { font-size: 1.5rem; margin: 2rem 0; font-weight: bold; color: #fff; font-family: var(--font-pixel); line-height: 1.5;}
+.cta-button {
+    display: inline-block; background: transparent; color: var(--color-accent); border: 2px solid var(--color-accent);
+    padding: 1.5rem 3rem; font-weight: 900; text-decoration: none; transition: 0.3s;
+    font-family: var(--font-pixel); font-size: 1rem;
+}
+.cta-button:hover { background: var(--color-accent); color: #000; box-shadow: 0 0 30px var(--color-accent); transform: scale(1.05); }
+/* style.css 하단에 추가 */
+
+/* ============================
+   Space Objects Animation
+   ============================ */
+
+/* 오브젝트들을 담을 컨테이너 (화면 전체를 덮고 클릭 방지) */
+#space-objects {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; /* 클릭이 투과되도록 설정 (중요) */
+    z-index: -1; /* 배경 별보다는 앞, 컨텐츠보다는 뒤 */
+    overflow: hidden;
+}
+
+/* 공통 오브젝트 스타일 */
+.object {
+    position: absolute;
+    display: block;
+    /* 임시 모양 (이미지가 없을 때) */
+    background-color: #fff;
+}
+
+/* --- 적 우주선 (Enemy Ships) --- */
+.enemy {
+    width: 20px; height: 20px;
+    /* 픽셀 외계인 모양 (CSS trick) */
+    background: transparent;
+    box-shadow:
+            5px 0 #ff0055, 10px 0 #ff0055, 15px 0 #ff0055,
+            0 5px #ff0055, 20px 5px #ff0055,
+            0 10px #ff0055, 5px 10px #ff0055, 15px 10px #ff0055, 20px 10px #ff0055,
+            0 15px #ff0055, 20px 15px #ff0055,
+            5px 20px #ff0055, 15px 20px #ff0055;
+    /* 실제 픽셀 이미지를 쓸 경우 아래처럼 변경 */
+    /* background: url('path/to/enemy-pixel.png') no-repeat center/contain; box-shadow: none; */
+
+    top: -50px; /* 화면 밖에서 시작 */
+}
+
+/* 타입 A: 위에서 아래로 대각선 이동 */
+.enemy.type-a {
+    left: 20%;
+    animation: fly-diagonal 15s linear infinite;
+}
+/* 타입 B: 반대편에서 이동 */
+.enemy.type-b {
+    left: 80%;
+    /* 색상 변경 */
+    box-shadow:
+            5px 0 #00ffcc, 10px 0 #00ffcc, 15px 0 #00ffcc,
+            0 5px #00ffcc, 20px 5px #00ffcc,
+            0 10px #00ffcc, 5px 10px #00ffcc, 15px 10px #00ffcc, 20px 10px #00ffcc,
+            0 15px #00ffcc, 20px 15px #00ffcc,
+            5px 20px #00ffcc, 15px 20px #00ffcc;
+    animation: fly-diagonal-reverse 20s linear infinite;
+}
+
+/* --- 행성 (Planets) --- */
+.planet {
+    border-radius: 50%;
+    opacity: 0.6;
+}
+/* 작은 행성 */
+.planet.small {
+    width: 40px; height: 40px;
+    background: radial-gradient(circle at 30% 30%, #4a90e2, #1c2e4a);
+    top: 10%; left: -50px;
+    animation: float-right 60s linear infinite;
+}
+/* 큰 행성 */
+.planet.big {
+    width: 120px; height: 120px;
+    background: radial-gradient(circle at 30% 30%, #ffcc00, #996600);
+    bottom: 20%; right: -150px;
+    animation: float-left 80s linear infinite;
+}
+
+
+/* --- 유틸리티 (딜레이) --- */
+/* 랜덤하게 나타나는 느낌을 주기 위한 딜레이 */
+.delay-1 { animation-delay: 5s; }
+.delay-2 { animation-delay: 12s; }
+.delay-3 { animation-delay: 25s; }
+
+
+/* --- 키프레임 애니메이션 정의 --- */
+
+/* 대각선 이동 (왼쪽 위 -> 오른쪽 아래) */
+@keyframes fly-diagonal {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translate(100vw, 120vh) rotate(360deg); opacity: 0; }
+}
+
+/* 반대 대각선 이동 (오른쪽 위 -> 왼쪽 아래) */
+@keyframes fly-diagonal-reverse {
+    0% { transform: translate(0, 0) scaleX(-1); opacity: 0; } /* scaleX(-1)로 좌우 반전 */
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translate(-100vw, 120vh) scaleX(-1); opacity: 0; }
+}
+
+/* 오른쪽으로 천천히 이동 (행성) */
+@keyframes float-right {
+    from { transform: translateX(0) rotate(0deg); }
+    to { transform: translateX(120vw) rotate(180deg); }
+}
+
+/* 왼쪽으로 천천히 이동 (행성) */
+@keyframes float-left {
+    from { transform: translateX(0) rotate(0deg); }
+    to { transform: translateX(-120vw) rotate(-180deg); }
+}
 
 /* Mobile */
 @media (max-width: 900px) {
-    .sidebar { width: 100%; height: auto; position: relative; padding: 1rem; flex-direction: row; align-items: center; }
+    .sidebar { width: 100%; height: auto; position: relative; padding: 1rem; flex-direction: row; align-items: center; border-right: none; border-bottom: 2px solid #333;}
     .sidebar-nav { display: none; }
     .content { margin-left: 0; width: 100%; }
-    .section { padding: 4rem 1.5rem; }
-    .hero-text h2 { font-size: 2.2rem; }
+    .section { padding: 4rem 1.5rem; min-height: auto; }
+    .hero-text h2 { font-size: 2rem; }
     .project-grid { grid-template-columns: 1fr; }
     .skill-container { grid-template-columns: 1fr; }
+    .hp-container { display: none; } /* 모바일에선 HP바 숨김 */
 }
