@@ -312,7 +312,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    width: 100%;
 }
 
 .project-card {
@@ -419,3 +419,153 @@ body {
     padding: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s;
 }
 .submit-btn:hover { background: var(--color-accent); color: #000; }
+
+
+/* ============================
+   Space Objects Animation (Enemies)
+   ============================ */
+
+/* 공통 오브젝트 스타일 */
+.object, .enemy, .fighter-ship {
+    position: absolute;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/* --- 적 기체 (Enemies) --- */
+/* 1. Zako (자코) */
+.enemy.type-zako {
+    width: 40px; height: 40px;
+    background-image: url('../images/zako.png');
+    top: -50px; left: 20%;
+    animation: fly-diagonal 12s linear infinite;
+}
+
+/* 2. Goa (고아) */
+.enemy.type-goa {
+    width: 40px; height: 40px;
+    background-image: url('../images/goa.png');
+    top: -50px; left: 70%;
+    animation: fly-diagonal-reverse 15s linear infinite;
+}
+
+/* 3. Midori (미도리) */
+.enemy.type-midori {
+    width: 45px; height: 45px;
+    background-image: url('../images/midori.png');
+    top: 10%; left: -60px;
+    animation: float-right 20s linear infinite;
+}
+
+/* 4. Sasori (사소리) */
+.enemy.type-sasori {
+    width: 40px; height: 40px;
+    background-image: url('../images/sasori.png');
+    bottom: -50px; left: 30%;
+    animation: fly-up 18s linear infinite;
+}
+
+/* 5. Momizi (모미지) */
+.enemy.type-momizi {
+    width: 40px; height: 40px;
+    background-image: url('../images/momizi.png');
+    top: 30%; right: -60px;
+    animation: float-left 25s linear infinite;
+}
+
+/* --- 보스급 기체 --- */
+.enemy.type-boss1 {
+    width: 100px; height: 100px;
+    background-image: url('../images/bossgalaga1.png');
+    top: 15%; right: 10%;
+    animation: hover-boss 8s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+/* --- 아군 기체 (Fighter) --- */
+.fighter-ship {
+    width: 60px; height: 60px;
+    background-image: url('../images/figter.png');
+    bottom: 50px; left: 50px;
+    transform: rotate(90deg); /* 오른쪽을 바라보게 */
+    animation: patrol-fighter 30s linear infinite;
+    z-index: -1;
+}
+
+
+/* --- 유틸리티 (딜레이) --- */
+.delay-1 { animation-delay: 2s; }
+.delay-2 { animation-delay: 5s; }
+.delay-3 { animation-delay: 10s; }
+
+
+/* --- 키프레임 애니메이션 정의 --- */
+
+/* 대각선 이동 (왼쪽 위 -> 오른쪽 아래) */
+@keyframes fly-diagonal {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translate(80vw, 100vh) rotate(360deg); opacity: 0; }
+}
+
+/* 반대 대각선 이동 (오른쪽 위 -> 왼쪽 아래) */
+@keyframes fly-diagonal-reverse {
+    0% { transform: translate(0, 0) scaleX(-1); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translate(-80vw, 100vh) scaleX(-1); opacity: 0; }
+}
+
+/* 오른쪽으로 이동 */
+@keyframes float-right {
+    from { transform: translateX(0) rotate(0deg); }
+    to { transform: translateX(120vw) rotate(360deg); }
+}
+
+/* 왼쪽으로 이동 */
+@keyframes float-left {
+    from { transform: translateX(0) rotate(0deg); }
+    to { transform: translateX(-120vw) rotate(-360deg); }
+}
+
+/* 위로 이동 */
+@keyframes fly-up {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-120vh); opacity: 0; }
+}
+
+/* 보스 둥둥 떠다니기 */
+@keyframes hover-boss {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+}
+
+/* 아군 기체 순찰 */
+@keyframes patrol-fighter {
+    0% { transform: translate(0, 0) rotate(90deg); }
+    25% { transform: translate(200px, -100px) rotate(45deg); }
+    50% { transform: translate(400px, 0) rotate(90deg); }
+    75% { transform: translate(200px, 100px) rotate(135deg); }
+    100% { transform: translate(0, 0) rotate(90deg); }
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+    .sidebar { width: 100%; height: auto; position: relative; padding: 1rem; flex-direction: row; align-items: center; border-right: none; border-bottom: 2px solid #333;}
+    .sidebar-nav { display: none; }
+    .content { margin-left: 0; width: 100%; height: auto; display: block; overflow: visible; }
+    .section { padding: 4rem 1.5rem; min-height: auto; height: auto; min-width: auto; width: 100%; max-width: none; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .hero-text h2 { font-size: 2rem; }
+    .project-grid { grid-template-columns: 1fr; }
+    /* [수정] 모바일에서는 1열로 복귀 */
+    .skill-container { grid-template-columns: 1fr; }
+    .hp-container { display: none; } /* 모바일에선 HP바 숨김 */
+    .exp-bar-container { display: none; } /* 모바일에선 EXP바 숨김 */
+
+    /* 모바일에서 적 기체 숨김 (성능 최적화) */
+    #space-objects { display: none; }
+}

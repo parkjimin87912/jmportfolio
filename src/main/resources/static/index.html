@@ -25,6 +25,22 @@
 <div class="twinkling"></div>
 <div class="scanlines"></div>
 
+<!-- [추가] 우주 배경 오브젝트 컨테이너 -->
+<div id="space-objects">
+    <!-- 적 기체들 (CSS 애니메이션으로 움직임) -->
+    <div class="enemy type-zako delay-1"></div>
+    <div class="enemy type-goa delay-2"></div>
+    <div class="enemy type-midori delay-3"></div>
+    <div class="enemy type-sasori delay-1"></div>
+    <div class="enemy type-momizi delay-2"></div>
+
+    <!-- 보스급 기체 (느리게 이동) -->
+    <div class="enemy type-boss1 delay-3"></div>
+
+    <!-- 아군 기체 (화면 하단에서 대기하거나 이동) -->
+    <div class="fighter-ship"></div>
+</div>
+
 <!-- 스크롤 진행바 (EXP Bar) - 초기에는 숨김 -->
 <div class="exp-bar-container" style="display: none;">
     <span class="exp-label pixel-font">EXP</span>
