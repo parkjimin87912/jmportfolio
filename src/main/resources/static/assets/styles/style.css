@@ -307,12 +307,20 @@ body {
 .tech-tag.high:hover { background: var(--color-accent); color: #000; box-shadow: 6px 6px 0 #fff; }
 
 /* Projects (Mission Cards) */
-.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem; }
+/* [수정] 프로젝트 단일 뷰 스타일 */
+.project-single-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .project-card {
     background: var(--color-card-bg); border: 2px solid #333;
     position: relative; transition: 0.3s;
     /* border-radius 제거 (레트로 느낌) */
     cursor: crosshair;
+    width: 100%; max-width: 800px; /* 카드 너비 제한 */
 }
 /* 카드 코너 장식 (HUD 느낌) */
 .project-card::before {
@@ -335,18 +343,18 @@ body {
     padding: 4px 8px; font-weight: bold; font-family: var(--font-pixel);
 }
 
-.card-body { padding: 2rem; }
-.card-body h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
-.project-desc { color: #ccc; margin-bottom: 1.5rem; font-size: 0.95rem; min-height: 3em; line-height: 1.6; }
+.card-body { padding: 3rem; } /* 패딩 증가 */
+.card-body h3 { font-size: 2rem; margin-bottom: 1.5rem; color: #fff; } /* 폰트 크기 증가 */
+.project-desc { color: #ccc; margin-bottom: 2rem; font-size: 1.1rem; min-height: auto; line-height: 1.8; } /* 폰트 크기 증가 */
 
 .tech-stack span {
-    font-size: 0.8rem; color: var(--color-accent2); border: 1px solid var(--color-accent2);
-    padding: 0.2rem 0.6rem; margin-right: 0.5rem; background: rgba(255, 0, 85, 0.05);
+    font-size: 0.9rem; color: var(--color-accent2); border: 1px solid var(--color-accent2);
+    padding: 0.4rem 0.8rem; margin-right: 0.5rem; background: rgba(255, 0, 85, 0.05);
 }
 
 .card-links { margin-top: 2rem; border-top: 1px dashed #333; padding-top: 1rem; text-align: right;}
 .card-links a {
-    display: inline-block; font-size: 0.8rem; color: #fff; margin-left: 1rem;
+    display: inline-block; font-size: 0.9rem; color: #fff; margin-left: 1rem;
     font-family: var(--font-pixel); text-transform: uppercase;
     transition: 0.2s;
     cursor: crosshair;
@@ -368,129 +376,46 @@ body {
 .cta-button:hover { background: var(--color-accent); color: #000; box-shadow: 0 0 30px var(--color-accent); transform: scale(1.05); }
 
 /* ============================
-   Space Objects Animation
+   Modal Styles (Email)
    ============================ */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden; transition: 0.3s;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
 
-/* 오브젝트들을 담을 컨테이너 (화면 전체를 덮고 클릭 방지) */
-#space-objects {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; /* 클릭이 투과되도록 설정 (중요) */
-    z-index: -1; /* 배경 별보다는 앞, 컨텐츠보다는 뒤 */
-    overflow: hidden;
+.modal-window {
+    background: #111; border: 2px solid var(--color-accent);
+    width: 90%; max-width: 500px;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+    transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.active .modal-window { transform: scale(1); }
+
+.modal-header {
+    background: var(--color-accent); color: #000;
+    padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header span { font-size: 0.8rem; font-weight: bold; }
+.close-btn {
+    background: transparent; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem;
 }
 
-/* 공통 오브젝트 스타일 */
-.object {
-    position: absolute;
-    display: block;
-    /* 임시 모양 (이미지가 없을 때) */
-    background-color: #fff;
+.modal-body { padding: 2rem; }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; color: var(--color-accent); font-size: 0.7rem; margin-bottom: 0.5rem; }
+.form-group input, .form-group textarea {
+    width: 100%; background: #222; border: 1px solid #444; color: #fff;
+    padding: 10px; font-family: var(--font-main); font-size: 0.9rem;
+    outline: none; transition: 0.2s;
 }
+.form-group input:focus, .form-group textarea:focus { border-color: var(--color-accent); box-shadow: 0 0 5px rgba(0, 255, 204, 0.3); }
 
-/* --- 적 우주선 (Enemy Ships) --- */
-.enemy {
-    width: 20px; height: 20px;
-    /* 픽셀 외계인 모양 (CSS trick) */
-    background: transparent;
-    box-shadow:
-            5px 0 #ff0055, 10px 0 #ff0055, 15px 0 #ff0055,
-            0 5px #ff0055, 20px 5px #ff0055,
-            0 10px #ff0055, 5px 10px #ff0055, 15px 10px #ff0055, 20px 10px #ff0055,
-            0 15px #ff0055, 20px 15px #ff0055,
-            5px 20px #ff0055, 15px 20px #ff0055;
-    /* 실제 픽셀 이미지를 쓸 경우 아래처럼 변경 */
-    /* background: url('path/to/enemy-pixel.png') no-repeat center/contain; box-shadow: none; */
-
-    top: -50px; /* 화면 밖에서 시작 */
+.submit-btn {
+    width: 100%; background: transparent; border: 2px solid var(--color-accent); color: var(--color-accent);
+    padding: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s;
 }
-
-/* 타입 A: 위에서 아래로 대각선 이동 */
-.enemy.type-a {
-    left: 20%;
-    animation: fly-diagonal 15s linear infinite;
-}
-/* 타입 B: 반대편에서 이동 */
-.enemy.type-b {
-    left: 80%;
-    /* 색상 변경 */
-    box-shadow:
-            5px 0 #00ffcc, 10px 0 #00ffcc, 15px 0 #00ffcc,
-            0 5px #00ffcc, 20px 5px #00ffcc,
-            0 10px #00ffcc, 5px 10px #00ffcc, 15px 10px #00ffcc, 20px 10px #00ffcc,
-            0 15px #00ffcc, 20px 15px #00ffcc,
-            5px 20px #00ffcc, 15px 20px #00ffcc;
-    animation: fly-diagonal-reverse 20s linear infinite;
-}
-
-/* --- 행성 (Planets) --- */
-.planet {
-    border-radius: 50%;
-    opacity: 0.6;
-}
-/* 작은 행성 */
-.planet.small {
-    width: 40px; height: 40px;
-    background: radial-gradient(circle at 30% 30%, #4a90e2, #1c2e4a);
-    top: 10%; left: -50px;
-    animation: float-right 60s linear infinite;
-}
-/* 큰 행성 */
-.planet.big {
-    width: 120px; height: 120px;
-    background: radial-gradient(circle at 30% 30%, #ffcc00, #996600);
-    bottom: 20%; right: -150px;
-    animation: float-left 80s linear infinite;
-}
-
-
-/* --- 유틸리티 (딜레이) --- */
-/* 랜덤하게 나타나는 느낌을 주기 위한 딜레이 */
-.delay-1 { animation-delay: 5s; }
-.delay-2 { animation-delay: 12s; }
-.delay-3 { animation-delay: 25s; }
-
-
-/* --- 키프레임 애니메이션 정의 --- */
-
-/* 대각선 이동 (왼쪽 위 -> 오른쪽 아래) */
-@keyframes fly-diagonal {
-    0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translate(100vw, 120vh) rotate(360deg); opacity: 0; }
-}
-
-/* 반대 대각선 이동 (오른쪽 위 -> 왼쪽 아래) */
-@keyframes fly-diagonal-reverse {
-    0% { transform: translate(0, 0) scaleX(-1); opacity: 0; } /* scaleX(-1)로 좌우 반전 */
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translate(-100vw, 120vh) scaleX(-1); opacity: 0; }
-}
-
-/* 오른쪽으로 천천히 이동 (행성) */
-@keyframes float-right {
-    from { transform: translateX(0) rotate(0deg); }
-    to { transform: translateX(120vw) rotate(180deg); }
-}
-
-/* 왼쪽으로 천천히 이동 (행성) */
-@keyframes float-left {
-    from { transform: translateX(0) rotate(0deg); }
-    to { transform: translateX(-120vw) rotate(-180deg); }
-}
-
-/* Mobile */
-@media (max-width: 900px) {
-    .sidebar { width: 100%; height: auto; position: relative; padding: 1rem; flex-direction: row; align-items: center; border-right: none; border-bottom: 2px solid #333;}
-    .sidebar-nav { display: none; }
-    .content { margin-left: 0; width: 100%; height: auto; display: block; overflow: visible; }
-    .section { padding: 4rem 1.5rem; min-height: auto; height: auto; min-width: auto; width: 100%; max-width: none; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .hero-text h2 { font-size: 2rem; }
-    .project-grid { grid-template-columns: 1fr; }
-    /* [수정] 모바일에서는 1열로 복귀 */
-    .skill-container { grid-template-columns: 1fr; }
-    .hp-container { display: none; } /* 모바일에선 HP바 숨김 */
-    .exp-bar-container { display: none; } /* 모바일에선 EXP바 숨김 */
-}
+.submit-btn:hover { background: var(--color-accent); color: #000; }

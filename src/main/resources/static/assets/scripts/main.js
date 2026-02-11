@@ -2,6 +2,15 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    /* 0. EmailJS Init */
+    // [중요] 본인의 EmailJS Public Key를 입력해야 합니다.
+    // 회원가입 후 https://dashboard.emailjs.com/admin/account 에서 확인 가능
+    // 예: emailjs.init("YOUR_PUBLIC_KEY");
+    // 테스트를 위해 임시 키를 넣거나, 나중에 직접 수정해야 함.
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init("dhEl8FrNz4axqZv1I");
+    }
+
     /* 1. Intro Screen Logic */
     const introScreen = document.getElementById('intro-screen');
     const startButton = document.getElementById('start-button');
@@ -134,8 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(id !== 'intro-screen') {
                         navLinks.forEach(link => {
                             link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${id}`) {
-                                link.classList.add('active');
+                            
+                            const href = link.getAttribute('href');
+                            
+                            // [수정] 프로젝트 섹션(project-1, project-2, project-3)은 모두 'Projects' 메뉴를 활성화
+                            if (id.startsWith('project-')) {
+                                if (href === '#project-1') {
+                                    link.classList.add('active');
+                                }
+                            } else {
+                                // 일반 섹션 (home, about, skills, contact)
+                                if (href === `#${id}`) {
+                                    link.classList.add('active');
+                                }
                             }
                         });
                         
@@ -152,5 +172,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealElements.forEach(el => observer.observe(el));
     sections.forEach(sec => observer.observe(sec));
+
+
+    /* 5. Email Modal Logic */
+    const openModalBtn = document.getElementById('open-mail-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const modalOverlay = document.getElementById('mail-modal');
+    const contactForm = document.getElementById('contact-form');
+
+    if (openModalBtn && modalOverlay) {
+        openModalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modalOverlay.style.display = 'flex';
+            // 약간의 딜레이 후 active 클래스 추가 (애니메이션용)
+            setTimeout(() => {
+                modalOverlay.classList.add('active');
+            }, 10);
+        });
+
+        const closeModal = () => {
+            modalOverlay.classList.remove('active');
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+            }, 300);
+        };
+
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        // 배경 클릭 시 닫기
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // 폼 제출 (EmailJS)
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'SENDING...';
+            btn.disabled = true;
+
+            // EmailJS sendForm (Service ID, Template ID, Form ID)
+            // [중요] 본인의 Service ID와 Template ID로 교체해야 함
+            emailjs.sendForm('service_9r8554d', 'template_p76bckc', this)
+                .then(function() {
+                    alert('메일이 성공적으로 전송되었습니다! 🚀');
+                    btn.innerText = 'SUCCESS';
+                    setTimeout(() => {
+                        closeModal();
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                        contactForm.reset();
+                    }, 1000);
+                }, function(error) {
+                    alert('전송 실패... 다시 시도해주세요. 😢\n' + JSON.stringify(error));
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                });
+        });
+    }
 
 });
