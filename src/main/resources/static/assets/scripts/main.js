@@ -25,6 +25,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSectionIndex = 0;
     let isScrolling = false; // 스크롤 중복 방지 플래그
 
+    // [추가] 네비게이션 업데이트 함수
+    function updateNav(id) {
+        if (!id || id === 'intro-screen') return;
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href');
+            
+            // [수정] 프로젝트 섹션(project-1, project-2, project-3)은 모두 'Projects' 메뉴를 활성화
+            if (id.startsWith('project-')) {
+                if (href === '#project-1') {
+                    link.classList.add('active');
+                }
+            } else {
+                // 일반 섹션 (home, about, skills, contact)
+                if (href === `#${id}`) {
+                    link.classList.add('active');
+                }
+            }
+        });
+    }
+
     if (startButton) {
         startButton.addEventListener('click', () => {
             introScreen.classList.add('fade-out');
@@ -40,9 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 메인 컨텐츠가 나타날 때 살짝 딜레이를 주어 부드럽게
                 setTimeout(() => {
                     portfolioContent.classList.add('fade-in');
-                    // 시작 시 첫 번째 섹션으로 확실하게 이동
-                    if(sections.length > 0) {
-                        sections[0].scrollIntoView({ behavior: 'auto', inline: 'start' });
+                    // 시작 시 첫 번째 섹션(Home)으로 확실하게 이동
+                    // sections[0]은 intro-screen이므로 sections[1]이 Home
+                    if(sections.length > 1) {
+                        sections[1].scrollIntoView({ behavior: 'auto', inline: 'start' });
+                        currentSectionIndex = 1; // 인덱스도 Home으로 설정
+                        updateNav(sections[1].id); // 초기 네비게이션 설정
                     }
                 }, 50);
             }, 800);
@@ -66,7 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } else {
                     // 위로 휠 -> 이전 섹션 (왼쪽)
-                    if (currentSectionIndex > 0) {
+                    // 0번은 intro-screen이므로 1번까지만 이동 가능
+                    if (currentSectionIndex > 1) {
                         changeSection(currentSectionIndex - 1);
                     }
                 }
@@ -87,8 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 섹션 이동 함수
     function changeSection(index) {
+        // 인덱스 유효성 체크
+        if (index < 1 || index >= sections.length) return;
+
         isScrolling = true;
         currentSectionIndex = index;
+
+        // [수정] 이동 시작 시 네비게이션 즉시 업데이트
+        updateNav(sections[index].id);
 
         sections[index].scrollIntoView({
             behavior: 'smooth',
@@ -105,14 +137,26 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 3. Navigation Click Handling */
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            if (window.innerWidth > 900) {
-                e.preventDefault(); // 기본 앵커 이동 방지
-                
-                const targetId = link.getAttribute('href').substring(1);
-                // ID로 해당 섹션의 인덱스 찾기
-                const targetIndex = Array.from(sections).findIndex(sec => sec.id === targetId);
-                
-                if (targetIndex !== -1) {
+            e.preventDefault(); // 기본 앵커 이동 방지
+            
+            const targetId = link.getAttribute('href').substring(1);
+            // ID로 해당 섹션의 인덱스 찾기
+            const targetIndex = Array.from(sections).findIndex(sec => sec.id === targetId);
+            
+            if (targetIndex !== -1) {
+                // 모바일인 경우 세로 스크롤 이동
+                if (window.innerWidth <= 900) {
+                    // [수정] 모바일에서는 scrollIntoView 사용 시 block: 'start'로 설정
+                    sections[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    updateNav(sections[targetIndex].id);
+                    
+                    // [추가] 모바일 메뉴 클릭 시 사이드바 닫기
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                    }
+                } else {
+                    // 데스크탑인 경우 가로 스크롤 이동
                     changeSection(targetIndex);
                 }
             }
@@ -122,10 +166,15 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 4. Scroll Reveal & Nav Active State */
     // IntersectionObserver는 네비게이션 활성화 및 애니메이션 트리거용으로 유지
     const revealElements = document.querySelectorAll('.reveal');
+    // [수정] .content 내부의 섹션만 선택 (intro-screen 제외)
+    const contentSections = document.querySelectorAll('.content section');
 
+    // [수정] 반응형 옵저버 옵션 설정
     const observerOptions = {
-        root: contentContainer,
-        threshold: 0.5 // 50% 이상 보일 때 감지
+        root: null, // Viewport 기준
+        // 데스크탑: 왼쪽 사이드바 제외, 모바일: 상단 헤더 제외
+        rootMargin: window.innerWidth > 900 ? "0px 0px 0px -280px" : "-100px 0px 0px 0px",
+        threshold: 0.3 // 30% 이상 보이면 감지
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -140,28 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 섹션인 경우에만 네비게이션 업데이트
                 if (entry.target.tagName === 'SECTION') {
                     const id = entry.target.getAttribute('id');
-                    if(id !== 'intro-screen') {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            
-                            const href = link.getAttribute('href');
-                            
-                            // [수정] 프로젝트 섹션(project-1, project-2, project-3)은 모두 'Projects' 메뉴를 활성화
-                            if (id.startsWith('project-')) {
-                                if (href === '#project-1') {
-                                    link.classList.add('active');
-                                }
-                            } else {
-                                // 일반 섹션 (home, about, skills, contact)
-                                if (href === `#${id}`) {
-                                    link.classList.add('active');
-                                }
-                            }
-                        });
+                    
+                    // [수정] 스크립트로 이동 중이 아닐 때만 옵저버가 네비게이션 업데이트
+                    if (!isScrolling) {
+                        updateNav(id);
                         
                         // 현재 인덱스 동기화 (새로고침 등으로 위치가 달라졌을 경우 대비)
                         const index = Array.from(sections).findIndex(sec => sec.id === id);
-                        if (index !== -1 && !isScrolling) {
+                        if (index !== -1) {
                             currentSectionIndex = index;
                         }
                     }
@@ -171,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, observerOptions);
 
     revealElements.forEach(el => observer.observe(el));
-    sections.forEach(sec => observer.observe(sec));
+    contentSections.forEach(sec => observer.observe(sec));
 
 
     /* 5. Email Modal Logic */
@@ -232,6 +267,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.innerText = originalText;
                     btn.disabled = false;
                 });
+        });
+    }
+
+    /* 6. Mobile Menu Toggle Logic */
+    const menuToggleBtn = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (menuToggleBtn && sidebar) {
+        menuToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // 사이드바 외부 클릭 시 닫기 (선택 사항)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 900 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                e.target !== menuToggleBtn) {
+                sidebar.classList.remove('active');
+            }
         });
     }
 
